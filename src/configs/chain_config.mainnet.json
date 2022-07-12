@@ -1,6 +1,6 @@
 {
   "title": "KiChain Block Explorer",
-  "network": "desmos-mainnet-1",
+  "network": "kichain-2",
   "icon": "https://raw.githubusercontent.com/GunniStake/big-dipper-assets/main/kichain/icon.png",
   "logo": {
     "default": "https://raw.githubusercontent.com/GunniStake/big-dipper-assets/main/kichain/logo.png"
