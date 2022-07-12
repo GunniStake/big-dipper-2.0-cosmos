@@ -9,7 +9,7 @@ import Big from 'big.js';
 import {
   useMarketDataQuery,
   MarketDataQuery,
-} from '@graphql/types';
+} from '@graphql/types/general_types';
 import { chainConfig } from '@configs';
 import {
   writeMarket,
@@ -60,7 +60,8 @@ export const useMarketRecoil = () => {
       communityPool = formatToken(communityPoolCoin.amount, communityPoolCoin.denom);
     }
 
-    const bondedTokens = R.pathOr(0, ['bondedTokens', 0, 'bonded_tokens'], data);
+    const bondedTokens = R.pathOr(1, ['bondedTokens', 0, 'bonded_tokens'], data);
+    const communityTax = R.pathOr('0', ['distributionParams', 0, 'params', 'community_tax'], data);
 
     const blocksPerYear = R.pathOr(0, ['mintParams', 0, 'params', 'blocks_per_year'], data);
     const averageBlockTime = R.pathOr(0, ['averageBlockTime', 0, 'average_time'], data);
@@ -73,7 +74,8 @@ export const useMarketRecoil = () => {
     
     const CommunityTax = parseFloat(R.pathOr(0, ['distributionParams', 0, 'params', 'community_tax'], data));
 
-    const apr = Big(rawSupplyAmount).times(1-CommunityTax).times(blockAdjustment).times(inflation).div(bondedTokens).toNumber();
+    const inflationWithCommunityTax = Big(1).minus(communityTax).times(inflation).toPrecision(2);
+    const apr = Big(rawSupplyAmount).times(inflationWithCommunityTax).div(bondedTokens).toNumber();
 
     return ({
       price,
